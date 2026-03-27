@@ -1,8 +1,11 @@
+import 'dotenv/config';
 import express, { type NextFunction, type Request, type Response } from 'express';
+import { PrismaPg } from '@prisma/adapter-pg';
 import { PrismaClient } from './generated/prisma/client';
 
 const app = express();
-const prisma = new PrismaClient();
+const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL });
+const prisma = new PrismaClient({ adapter });
 
 app.use(express.json());
 
