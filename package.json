@@ -2,10 +2,13 @@
   "name": "natone-backend",
   "version": "1.0.0",
   "description": "",
-  "main": "src/index.js",
+  "main": "dist/index.js",
   "scripts": {
-    "dev": "node --watch src/index.js",
-    "start": "node src/index.js",
+    "dev": "tsx watch src/index.ts",
+    "build": "tsc && cp -R src/generated dist/generated",
+    "start": "node dist/index.js",
+    "lint": "eslint .",
+    "format": "prettier -w .",
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
     "prisma:deploy": "prisma migrate deploy"
@@ -22,8 +25,18 @@
   },
   "homepage": "https://github.com/IvanGelium/natone-backend#readme",
   "dependencies": {
-    "@prisma/client": "^6.19.2",
+    "@prisma/client": "^7.6.0",
     "express": "^5.2.1",
-    "prisma": "^6.19.2"
+    "prisma": "^7.6.0"
+  },
+  "devDependencies": {
+    "@antfu/eslint-config": "^3.8.0",
+    "@types/express": "^4.17.21",
+    "dotenv": "^17.3.1",
+    "eslint": "^9.20.0",
+    "eslint-config-prettier": "^9.1.0",
+    "prettier": "^3.2.5",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.3"
   }
 }
