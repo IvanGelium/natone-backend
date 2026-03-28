@@ -5,10 +5,11 @@
   "main": "dist/index.js",
   "scripts": {
     "dev": "tsx watch src/index.ts",
-    "build": "tsc && cp -R src/generated dist/generated",
+    "build": "tsc",
     "start": "node dist/index.js",
     "lint": "eslint .",
     "format": "prettier -w .",
+    "postinstall": "prisma generate",
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
     "prisma:deploy": "prisma migrate deploy"

@@ -21,6 +21,9 @@ RUN apt-get update -y && apt-get install -y openssl
 COPY package*.json ./
 RUN npm ci --omit=dev
 
+ENV DATABASE_URL="postgresql://postgres:postgres@db:5432/natone?schema=public"
+RUN npx prisma generate
+
 COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/prisma ./prisma
 COPY --from=builder /app/prisma.config.ts ./prisma.config.ts

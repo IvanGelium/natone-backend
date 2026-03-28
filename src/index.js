@@ -1,3 +1,4 @@
+const process = require('node:process')
 const express = require('express')
 const { PrismaClient } = require('./generated/prisma/client')
 
@@ -41,7 +42,7 @@ app.get('/items/:id', async (req, res, next) => {
   }
 })
 
-app.use((err, req, res, next) => {
+app.use((err, req, res, _next) => {
   console.error(err)
   res.status(500).json({ error: 'Internal server error' })
 })
