@@ -1,18 +1,18 @@
-FROM node:20-slim AS builder
+FROM node:22-slim AS builder
 
 WORKDIR /app
 
 RUN apt-get update -y && apt-get install -y openssl
 
 COPY package*.json ./
-RUN npm ci
+RUN npm ci --ignore-scripts
 
 COPY . .
 ENV DATABASE_URL="postgresql://postgres:postgres@db:5432/natone?schema=public"
 RUN npx prisma generate
 RUN npm run build
 
-FROM node:20-slim
+FROM node:22-slim
 
 WORKDIR /app
 
