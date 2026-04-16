@@ -1,53 +1,25 @@
-import 'dotenv/config';
-import express, { type NextFunction, type Request, type Response } from 'express';
-import { PrismaPg } from '@prisma/adapter-pg';
-import { PrismaClient } from '@prisma/client';
+import process from 'node:process'
 
-const app = express();
-const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL });
-const prisma = new PrismaClient({ adapter });
+import express, { type Request, type Response } from 'express'
+import { postMiddleware } from '@/middleware/postprocessing'
 
-app.use(express.json());
+import { preMiddleware } from '@/middleware/preprocessing'
+import router from '@/routes/routes'
+import 'dotenv/config'
 
-app.get('/health', (req: Request, res: Response) => {
-  res.json({ ok: true });
-});
+const app = express()
 
-app.get('/items', async (req: Request, res: Response, next: NextFunction) => {
-  try {
-    const items = await prisma.item.findMany({
-      orderBy: { createdAt: 'desc' },
-    });
-    res.json(items);
-  } catch (err) {
-    next(err);
-  }
-});
+app.use(...preMiddleware)
 
-app.get('/items/:id', async (req: Request, res: Response, next: NextFunction) => {
-  try {
-    const id = Number(req.params.id);
-    if (Number.isNaN(id)) {
-      return res.status(400).json({ error: 'Invalid id' });
-    }
+app.get('/health', (_req: Request, res: Response) => {
+  res.json({ ok: true })
+})
 
-    const item = await prisma.item.findUnique({ where: { id } });
-    if (!item) {
-      return res.status(404).json({ error: 'Not found' });
-    }
+app.use('/', router)
 
-    return res.json(item);
-  } catch (err) {
-    return next(err);
-  }
-});
+app.use(...postMiddleware)
 
-app.use((err: unknown, req: Request, res: Response, next: NextFunction) => {
-  console.error(err);
-  res.status(500).json({ error: 'Internal server error' });
-});
-
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 5001
 app.listen(port, () => {
-  console.log(`Server listening on http://localhost:${port}`);
-});
+  console.warn(`Server listening on http://localhost:${port}`)
+})

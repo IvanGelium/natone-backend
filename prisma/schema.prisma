@@ -11,9 +11,55 @@ datasource db {
   provider = "postgresql"
 }
 
-model Item {
+model item {
   id        Int      @id @default(autoincrement())
   title     String
   body      String
   createdAt DateTime @default(now())
+}
+
+model stage {
+  id Int @id @default(autoincrement())
+  title String
+  chapters Int[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model chapter { 
+  id Int @id @default(autoincrement())
+  title String
+  conspects Int[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model conspect {
+  id Int @id @default(autoincrement())
+  title     String
+  practice  String
+  body      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+
+
+enum user_role {
+  USER
+  SUPERUSER
+  MODERATOR
+  ADMIN
+}
+
+model user {
+  id Int @id @default(autoincrement())
+  name      String?                           
+  email     String   @unique                 
+  password  String                            
+  role user_role @default(USER)
+  createdAt DateTime @default(now())        
+  updatedAt DateTime @updatedAt    
+  deletedA  DateTime?    
+  isActive  Boolean  @default(true)  
 }
