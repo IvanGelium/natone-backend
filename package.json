@@ -53,6 +53,6 @@
   },
 
   "prisma": {
-    "seed": "node --import tsx prisma/seed.ts"
+    "seed": "node prisma/seed.mjs"
   }
 }
