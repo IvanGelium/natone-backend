@@ -19,28 +19,40 @@ model item {
 }
 
 model stage {
-  id Int @id @default(autoincrement())
-  title String
-  chapters Int[]
+  id        Int       @id @default(autoincrement())
+  title     String
+  chapters  chapter[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
 model chapter { 
   id Int @id @default(autoincrement())
-  title String
-  conspects Int[]
+  title     String
+  stage     stage?   @relation(fields: [stageId], references: [id])
+  stageId   Int?
+  conspects conspect[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
 model conspect {
-  id Int @id @default(autoincrement())
+  id        Int      @id @default(autoincrement())
   title     String
-  practice  String
+  practice   practice? @relation(fields: [practiceId], references: [id])
+  practiceId Int?
   body      String
+  chapter   chapter? @relation(fields: [chapterId], references: [id])
+  chapterId Int?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model practice {
+  id Int @id @default(autoincrement())
+  title     String
+  conspect conspect[]
+  conspectId Int?
 }
 
 
@@ -60,6 +72,6 @@ model user {
   role user_role @default(USER)
   createdAt DateTime @default(now())        
   updatedAt DateTime @updatedAt    
-  deletedA  DateTime?    
+  deletedAt  DateTime?    
   isActive  Boolean  @default(true)  
 }

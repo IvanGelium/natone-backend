@@ -1,3 +1,3 @@
-export { validate } from './validate';
-export { preMiddleware } from './preprocessing';
-export { postMiddleware } from './postprocessing';
+export { postMiddleware } from './postprocessing'
+export { preMiddleware } from './preprocessing'
+export { validate } from './validate'

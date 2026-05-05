@@ -7,13 +7,15 @@ export async function getConspects(req: Request, res: Response) {
   let select
   if (typeof fields === 'string')
     select = processSelect(fields)
-  const items = await prisma.conspect.findMany({ select })
+  const items = await prisma.conspect.findMany({
+    select,
+  })
   res.json(items)
 }
 
 export async function getConspectById(req: Request, res: Response) {
-  const { fields } = req.query
   const id = Number(req.params.id)
+  const { fields } = req.query
   let select
   if (typeof fields === 'string')
     select = processSelect(fields)
@@ -22,19 +24,51 @@ export async function getConspectById(req: Request, res: Response) {
     where: {
       id,
     },
-    select,
+    select: {
+      id: true,
+      title: true,
+      body: true,
+      chapterId: true,
+      createdAt: true,
+      updatedAt: true,
+      practiceId: true,
+      practice: {
+        select: {
+          id: true,
+          title: true,
+        },
+      },
+    },
   })
   res.json(conspect)
 }
 
 export async function createConspect(req: Request, res: Response) {
-  const conspect = await prisma.conspect.create({ data: req.body })
+  const { title, body, chapterId, practiceId } = req.body
+
+  const data = {
+    title,
+    body,
+    chapterId: chapterId ? Number(chapterId) : 1,
+    practiceId: practiceId ? Number(practiceId) : undefined,
+  }
+  const conspect = await prisma.conspect.create({ data })
   res.json(conspect)
 }
 
 export async function editConspect(req: Request, res: Response) {
+  const { title, body, chapterId, practiceId } = req.body
+  const data = {}
+
+  if (title)
+    data.title = title
+  if (body)
+    data.body = body
+
+  data.chapterId = chapterId ? Number(chapterId) : 1
+  data.practiceId = practiceId ? Number(practiceId) : null
+
   const id = Number(req.params.id)
-  const data = { data: req.body }
   const conspect = await prisma.conspect.update({
     where: { id },
     data,
