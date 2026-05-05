@@ -58,7 +58,17 @@ export async function createConspect(req: Request, res: Response) {
 
 export async function editConspect(req: Request, res: Response) {
   const { title, body, chapterId, practiceId } = req.body
-  const data = {}
+  const data: {
+    title: string
+    body: string
+    chapterId: number
+    practiceId: number | null
+  } = {
+    title: '',
+    body: '',
+    chapterId: 1,
+    practiceId: null,
+  }
 
   if (title)
     data.title = title
