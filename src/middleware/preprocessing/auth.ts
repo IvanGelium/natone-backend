@@ -1,4 +1,4 @@
-import type { NextFunction } from 'express'
+import type { NextFunction, Request } from 'express'
 import process from 'node:process'
 import jwt from 'jsonwebtoken'
 
