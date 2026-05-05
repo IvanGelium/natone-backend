@@ -6,8 +6,9 @@ export async function getPractice(req: Request, res: Response) {
   const items = await prisma.practice.findMany({
     select: {
       id: true,
-      title: true
-  } })
+      title: true,
+    },
+  })
   res.json(items)
 }
 

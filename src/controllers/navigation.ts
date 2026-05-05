@@ -36,7 +36,7 @@ export async function getNavigation(_req: Request, res: Response) {
       },
     },
   })
-  res.json({stages:navigation})
+  res.json({ stages: navigation })
 }
 
 // async function constructNavigation() {

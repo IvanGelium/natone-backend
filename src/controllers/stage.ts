@@ -10,8 +10,9 @@ export async function getStage(req: Request, res: Response) {
   const items = await prisma.stage.findMany({
     select: {
       id: true,
-      title:true
-  } })
+      title: true,
+    },
+  })
   res.json(items)
 }
 
@@ -41,9 +42,9 @@ export async function editStage(req: Request, res: Response) {
   const { title } = req.body
   const stage = await prisma.stage.update({
     where: { id },
-    data: { 
+    data: {
       title,
-    }
+    },
   })
   res.json(stage)
 }

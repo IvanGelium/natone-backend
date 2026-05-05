@@ -16,9 +16,9 @@ export async function getConspects(req: Request, res: Response) {
 export async function getConspectById(req: Request, res: Response) {
   const id = Number(req.params.id)
   const { fields } = req.query
-  let select
+  let _select
   if (typeof fields === 'string')
-    select = processSelect(fields)
+    _select = processSelect(fields)
 
   const conspect = await prisma.conspect.findUnique({
     where: {
