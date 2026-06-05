@@ -18,6 +18,8 @@
     "dev": "tsx watch src/index.ts",
     "build": "tsc || true && tsc-alias",
     "start": "node dist/index.js",
+    "db:check": "tsx scripts/db-restore-check.ts",
+    "db:restore": "tsx scripts/db-restore-check.ts --restore",
     "lint": "eslint .",
     "format": "prettier -w .",
     "postinstall": "prisma generate",

@@ -24,6 +24,8 @@ model stage {
   chapters  chapter[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  orderIndex Int    @default(0) 
+  @@index([orderIndex]) 
 }
 
 model chapter { 
@@ -34,6 +36,8 @@ model chapter {
   conspects conspect[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  orderIndex Int    @default(0) 
+  @@index([orderIndex]) 
 }
 
 model conspect {
@@ -46,6 +50,8 @@ model conspect {
   chapterId Int?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  orderIndex Int    @default(0) 
+  @@index([orderIndex]) 
 }
 
 model practice {

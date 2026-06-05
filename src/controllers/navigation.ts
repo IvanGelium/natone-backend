@@ -1,35 +1,31 @@
 import type { Request, Response } from 'express'
 import { prisma } from '@/lib/prisma'
 
-// interface shortStage {
-//   id: number
-//   title: string
-//   chapters: number[]
-// }
-// interface shortChapter {
-//   id: number
-//   title: string
-//   conspects: number[]
-// }
-
-// interface shortConspect {
-//   id: number
-//   title: string
-// }
-
 export async function getNavigation(_req: Request, res: Response) {
   const navigation = await prisma.stage.findMany({
+    orderBy: {
+      orderIndex: 'asc',
+    },
     select: {
       id: true,
       title: true,
+      orderIndex: true,
       chapters: {
+        orderBy: {
+          orderIndex: 'asc',
+        },
         select: {
           id: true,
           title: true,
+          orderIndex: true,
           conspects: {
+            orderBy: {
+              orderIndex: 'asc',
+            },
             select: {
               id: true,
               title: true,
+              orderIndex: true,
             },
           },
         },
@@ -39,57 +35,32 @@ export async function getNavigation(_req: Request, res: Response) {
   res.json({ stages: navigation })
 }
 
-// async function constructNavigation() {
-//   const stages = await prisma.stage.findMany({ select: {
-//     id: true,
-//     title: true,
-//     chapters: true,
-//   },
-//   })
+export async function setNavigationOrder(req: Request, res: Response) {
+  const entities = ['chapter', 'stage', 'conspect'] as const
+  const { entity } = req.params
 
-//   const chapters = await prisma.chapter.findMany({ select: {
-//     id: true,
-//     title: true,
-//     conspects: true,
-//   },
-//   })
+  const isValidEntity = (e: string): e is typeof entities[number] => entities.includes(e as any)
 
-//   const conspects = await prisma.conspect.findMany({ select: {
-//     id: true,
-//     title: true,
-//   },
-//   })
+  const orderedEntities = req.body || []
+  if (!isValidEntity(entity) || !orderedEntities.length) {
+    return res.status(400).send('Не удалось обновить порядок, не хватает данных.')
+  }
 
-//   const navigation = stages.map(stage => fillStages(stage))
-
-//   function fillStages(stage: shortStage) {
-//     const filledChapters = stage.chapters.map(chapterId => fillChapter(chapterId))
-//     return {
-//       id: stage.id,
-//       title: stage.title,
-//       chapters: filledChapters,
-//     }
-//   }
-
-//   function fillChapter(chapterId: number) {
-//     const chapter = chapters.find(c => c.id === chapterId)
-//     if (!chapter)
-//       return null
-
-//     const filledConspects = chapter.conspects.map((conspectId) => {
-//       const conspect = conspects.find(c => c.id === conspectId)
-//       if (!conspect)
-//         return null
-
-//       return conspect
-//     })
-//     return {
-//       id: chapter.id,
-//       title: chapter.title,
-//       conspects: filledConspects || null,
-//     }
-//   }
-
-//   return navigation
-// }
-//
+  try {
+    const queries = orderedEntities.map((item: { id: number | string, orderIndex: number }) => {
+      const id = Number(item.id)
+      const orderIndex = Number(item.orderIndex)
+      console.log('id:', id, 'order:', orderIndex)
+      return (prisma as any)[entity].update({
+        where: { id },
+        data: { orderIndex },
+      })
+    })
+    prisma.$transaction(queries)
+    res.json({ success: true })
+  }
+  catch (error) {
+    console.error(error)
+    res.status(500).json({ error: 'Failed to reorder' })
+  }
+}
