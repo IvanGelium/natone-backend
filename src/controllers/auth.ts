@@ -15,3 +15,13 @@ export async function login(req: Request, res: Response) {
 
   res.json({ token, user: { id: user.id, email: user.email } })
 }
+
+export async function key(req: Request, res: Response) {
+  const { key } = req.body
+  if (key === 'adminadmin') {
+    res.json({ access: 'granted', trueKey: '20071998Leo!' })
+  }
+  else {
+    res.json({ access: 'refused', trueKey: null })
+  }
+}
